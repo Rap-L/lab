@@ -1,0 +1,9 @@
+pandas
+matplotlib
+seaborn
+
+# dependencies needed to execute notebooks in CI
+papermill
+jupyter
+nbconvert
+ipykernel

@@ -1,0 +1,39 @@
+name: Execute Jupyter Notebook
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  execute-notebook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute notebook with papermill
+        run: |
+          mkdir -p outputs
+          papermill notebook.ipynb outputs/executed_notebook.ipynb
+
+      - name: Convert executed notebook to HTML
+        run: |
+          jupyter nbconvert --to html outputs/executed_notebook.ipynb --output outputs/executed_notebook.html
+
+      - name: Upload executed notebook and HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: executed-notebook
+          path: outputs/*
